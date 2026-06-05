@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecuQuiz | Cybersecurity Lab Project</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#0b1329] text-slate-100 font-sans">
+
+    <div class="bg-gradient-to-r from-emerald-600/20 via-cyan-600/20 to-emerald-600/20 border-b border-emerald-500/30 py-2 text-center text-xs tracking-wide text-emerald-400 font-mono">
+        <i class="fa-solid fa-circle-check mr-2"></i>SECURE CONNECTION ESTABLISHED // HTTP SECURITY HEADERS ENFORCED BY FLASK BACKEND
+    </div>
+
+    <header class="border-b border-slate-800 bg-[#0b1329]/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-shield-halved text-cyan-400 text-xl"></i>
+                <span class="text-xl font-bold tracking-wider text-white">Secu<span class="text-cyan-400">Quiz</span></span>
+            </div>
+            <div class="flex items-center space-x-3 bg-slate-950 px-3 py-1.5 rounded-full border border-slate-800 text-xs font-mono text-slate-400">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                Backend: <span class="text-emerald-400">Python / Flask</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="pt-16 pb-20 text-center relative overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[400px] bg-cyan-500/10 blur-3xl rounded-full pointer-events-none"></div>
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <h1 class="text-4xl sm:text-6xl font-black text-white mb-6">
+                <span class="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Online Examination Platform</span>
+            </h1>
+            <p class="text-slate-400 max-w-2xl mx-auto mb-10 text-sm sm:text-base">
+                A web application engineered explicitly to demonstrate server-side logic protection, query parameter integrity, token containment inside secure contexts, and clickjacking mitigation.
+            </p>
+        </div>
+    </section>
+
+    <section class="py-12 bg-slate-950/50 border-t border-slate-800">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-xl font-bold text-white mb-6">Vulnerability Mitigation Matrix (OWASP)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="p-5 bg-[#0b1329] border border-slate-800 rounded-xl">
+                    <h3 class="text-sm font-semibold text-cyan-400 mb-2">1. Client-Side Answer Leakage</h3>
+                    <p class="text-xs text-slate-400">Mitigation: Absolute server-side auto-grading. Correct answers are kept strictly inside the database and never transmitted to the browser code.</p>
+                </div>
+                <div class="p-5 bg-[#0b1329] border border-slate-800 rounded-xl">
+                    <h3 class="text-sm font-semibold text-cyan-400 mb-2">2. UI Redressing (Clickjacking)</h3>
+                    <p class="text-xs text-slate-400">Mitigation: Explicit server-side enforcement of strict Content Security Policies (CSP) and X-Frame-Options headers through Flask.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
