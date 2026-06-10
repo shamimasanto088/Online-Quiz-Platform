@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Secure Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#0b1329] text-slate-100 font-sans min-h-screen">
+    <!-- Header Navigation -->
+    <header class="border-b border-slate-800 bg-[#0b1329]/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="#" class="font-mono font-bold text-xl text-emerald-400 tracking-wider">&gt;_ KALI.QUIZ</a>
+            <div class="flex items-center space-x-4">
+                <span class="text-sm font-mono text-slate-400">User: <span class="text-emerald-400">{{ g.user.username }}</span></span>
+                <a href="{{ url_for('logout') }}" class="bg-red-950/40 border border-red-500/30 hover:bg-red-900/40 text-red-400 text-xs font-mono px-3 py-1.5 rounded transition">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Stats Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-xl text-center">
+                <div class="text-3xl font-bold font-mono text-emerald-400">{{ total_quizzes }}</div>
+                <div class="text-xs text-slate-400 font-mono uppercase mt-1">Attempts Logged</div>
+            </div>
+            <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-xl text-center">
+                <div class="text-3xl font-bold font-mono text-cyan-400">{{ avg_score }}%</div>
+                <div class="text-xs text-slate-400 font-mono uppercase mt-1">Average Accuracy</div>
+            </div>
+            <div class="bg-slate-900/40 border border-slate-800 p-6 rounded-xl text-center">
+                <div class="text-lg font-bold font-mono text-yellow-500 mt-2">{{ rank }}</div>
+                <div class="text-xs text-slate-400 font-mono uppercase mt-2">Hacker Tier</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Quizzes Categories Grid -->
+            <div class="lg:col-span-2">
+                <h2 class="text-lg font-bold font-mono text-cyan-400 mb-4">&gt;_ ACTIVE_CHALLENGES</h2>
+                <div class="space-y-4">
+                    {% for cat in categories %}
+                        <div class="bg-slate-900/30 border border-slate-800/80 rounded-lg p-5 flex items-center justify-between hover:border-cyan-500/40 transition">
+                            <div>
+                                <span class="inline-block px-2 py-0.5 text-[10px] font-mono font-bold rounded border mb-2
+                                    {% if cat.difficulty == 'Easy' %}bg-emerald-950/20 text-emerald-400 border-emerald-500/20
+                                    {% elif cat.difficulty == 'Medium' %}bg-yellow-950/20 text-yellow-500 border-yellow-500/20
+                                    {% else %}bg-red-950/20 text-red-400 border-red-500/20{% endif %}">
+                                    {{ cat.difficulty }}
+                                </span>
+                                <h3 class="text-base font-bold text-slate-100">{{ cat.name }}</h3>
+                                <p class="text-xs text-slate-400 mt-1">{{ cat.description }}</p>
+                            </div>
+                            <a href="{{ url_for('quiz', category_id=cat.id) }}" class="bg-cyan-600 hover:bg-cyan-500 text-white font-mono text-xs px-4 py-2 rounded transition">
+                                Start &gt;
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Terminal logs history -->
+            <div>
+                <h2 class="text-lg font-bold font-mono text-emerald-400 mb-4">&gt;_ LOGS_HISTORY</h2>
+                <div class="bg-slate-900/40 border border-slate-800 p-4 rounded-xl space-y-4">
+                    {% for attempt in recent_attempts %}
+                        <div class="border-b border-slate-800/60 pb-3 last:border-0 last:pb-0 font-mono text-xs">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-slate-200 font-bold">{{ attempt.category.name }}</span>
+                                <span class="{% if attempt.percentage >= 70 %}text-emerald-400{% else %}text-red-400{% endif %}">{{ attempt.percentage }}%</span>
+                            </div>
+                            <div class="flex justify-between text-slate-500 text-[10px]">
+                                <span>Correct: {{ attempt.score_value }}/{{ attempt.total_questions }}</span>
+                                <span><a href="{{ url_for('results', score_id=attempt.id) }}" class="text-cyan-400 hover:underline">[View Log]</a></span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="text-xs font-mono text-slate-500 text-center py-4">No past execution logs found.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment Shell | Secure Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#0b1329] text-slate-100 font-sans min-h-screen">
+    <div class="max-w-2xl mx-auto px-4 py-12">
+        <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-6 md:p-8 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-4 mb-6">
+                <div>
+                    <span class="text-xs font-mono text-slate-400">CATEGORY:</span>
+                    <h1 class="text-lg font-bold font-mono text-cyan-400">&gt;_ {{ category.name }}</h1>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs font-mono text-slate-400">TIME LIMIT:</span>
+                    <div id="timer" class="font-mono text-lg font-bold text-yellow-500">02:00</div>
+                </div>
+            </div>
+
+            <!-- Timer Progress bar -->
+            <div class="w-full bg-slate-800 h-1 rounded-full mb-8 overflow-hidden">
+                <div id="progress-bar" class="bg-emerald-500 h-full w-full transition-all duration-1000"></div>
+            </div>
+
+            <!-- Questions Form -->
+            <form id="quiz-form" method="POST" action="{{ url_for('quiz_submit') }}">
+                <input type="hidden" name="category_id" value="{{ category.id }}">
+
+                {% for q in questions %}
+                    <div class="question-block {% if not loop.first %}hidden{% endif %}" id="q-block-{{ loop.index0 }}">
+                        <div class="text-xs font-mono text-slate-500 mb-2">QUESTION {{ loop.index }} OF {{ questions|length }}</div>
+                        <h3 class="text-base md:text-lg font-mono text-slate-200 mb-6 font-semibold">{{ q.question_text }}</h3>
+
+                        <div class="space-y-3 mb-8">
+                            <label class="flex items-center space-x-3 bg-slate-900/40 hover:bg-slate-900/80 border border-slate-800 rounded-lg p-4 cursor-pointer transition">
+                                <input type="radio" name="question_{{ q.id }}" value="A" class="accent-emerald-500">
+                                <span class="font-mono text-sm"><strong class="text-emerald-400 mr-2">A:</strong> {{ q.option_a }}</span>
+                            </label>
+                            <label class="flex items-center space-x-3 bg-slate-900/40 hover:bg-slate-900/80 border border-slate-800 rounded-lg p-4 cursor-pointer transition">
+                                <input type="radio" name="question_{{ q.id }}" value="B" class="accent-emerald-500">
+                                <span class="font-mono text-sm"><strong class="text-emerald-400 mr-2">B:</strong> {{ q.option_b }}</span>
+                            </label>
+                            <label class="flex items-center space-x-3 bg-slate-900/40 hover:bg-slate-900/80 border border-slate-800 rounded-lg p-4 cursor-pointer transition">
+                                <input type="radio" name="question_{{ q.id }}" value="C" class="accent-emerald-500">
+                                <span class="font-mono text-sm"><strong class="text-emerald-400 mr-2">C:</strong> {{ q.option_c }}</span>
+                            </label>
+                            <label class="flex items-center space-x-3 bg-slate-900/40 hover:bg-slate-900/80 border border-slate-800 rounded-lg p-4 cursor-pointer transition">
+                                <input type="radio" name="question_{{ q.id }}" value="D" class="accent-emerald-500">
+                                <span class="font-mono text-sm"><strong class="text-emerald-400 mr-2">D:</strong> {{ q.option_d }}</span>
+                            </label>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <!-- Controls -->
+                <div class="flex justify-between items-center border-t border-slate-800 pt-6">
+                    <button type="button" id="prev-btn" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono text-xs px-4 py-2 rounded transition invisible">
+                        &lt; Prev
+                    </button>
+                    <button type="button" id="next-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs px-4 py-2 rounded transition">
+                        Next &gt;
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript code for navigation and timer (English outputs only) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const blocks = document.querySelectorAll('.question-block');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const form = document.getElementById('quiz-form');
+            const timerEl = document.getElementById('timer');
+            const progressBar = document.getElementById('progress-bar');
+            
+            let currentIdx = 0;
+            const total = blocks.length;
+
+            // Timer (20 seconds per question)
+            let timeRemaining = total * 20;
+            const initialTime = timeRemaining;
+
+            const countdown = setInterval(() => {
+                timeRemaining--;
+                const mins = Math.floor(timeRemaining / 60);
+                const secs = timeRemaining % 60;
+                timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                
+                progressBar.style.width = `${(timeRemaining / initialTime) * 100}%`;
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(countdown);
+                    alert("Timeout! Auto-submitting logs...");
+                    form.submit();
+                }
+            }, 1000);
+
+            function updateUI() {
+                blocks.forEach((b, idx) => {
+                    b.classList.toggle('hidden', idx !== currentIdx);
+                });
+                prevBtn.classList.toggle('invisible', currentIdx === 0);
+                
+                if (currentIdx === total - 1) {
+                    nextBtn.textContent = 'Submit Logs';
+                    nextBtn.classList.replace('bg-cyan-600', 'bg-emerald-600');
+                } else {
+                    nextBtn.textContent = 'Next >';
+                    nextBtn.classList.replace('bg-emerald-600', 'bg-cyan-600');
+                }
+            }
+
+            nextBtn.addEventListener('click', () => {
+                if (currentIdx < total - 1) {
+                    currentIdx++;
+                    updateUI();
+                } else {
+                    clearInterval(countdown);
+                    form.submit();
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentIdx > 0) {
+                    currentIdx--;
+                    updateUI();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

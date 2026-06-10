@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results | Secure Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#0b1329] text-slate-100 font-sans min-h-screen">
+    <div class="max-w-2xl mx-auto px-4 py-12">
+        <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-8 text-center shadow-2xl">
+            <h2 class="text-xl font-bold font-mono text-cyan-400 mb-6">&gt;_ ASSESSMENT_LOGS</h2>
+
+            <!-- Glow circle showing accuracy percentage -->
+            <div class="w-32 h-32 rounded-full border-4 flex flex-col justify-center items-center mx-auto mb-6 bg-slate-900
+                {% if score.percentage >= 70 %}border-emerald-500 shadow-lg shadow-emerald-500/20
+                {% else %}border-red-500 shadow-lg shadow-red-500/20{% endif %}">
+                <span class="text-3xl font-mono font-bold 
+                    {% if score.percentage >= 70 %}text-emerald-400{% else %}text-red-400{% endif %}">
+                    {{ score.percentage }}%
+                </span>
+                <span class="text-[9px] uppercase font-mono text-slate-500 mt-1">Accuracy</span>
+            </div>
+
+            <!-- Pass/Fail Dynamic Message -->
+            <h3 class="text-lg font-mono font-bold mb-2
+                {% if score.percentage >= 70 %}text-emerald-400{% else %}text-red-400{% endif %}">
+                {% if score.percentage >= 70 %}
+                    [+] SYSTEM COMPROMISED - PASS
+                {% else %}
+                    [-] INSUFFICIENT ACCESS - FAIL
+                {% endif %}
+            </h3>
+            <p class="text-sm text-slate-400 mb-8 font-mono">Solved {{ score.score_value }} of {{ score.total_questions }} challenges correctly.</p>
+
+            <a href="{{ url_for('dashboard') }}" class="bg-cyan-600 hover:bg-cyan-500 text-white font-mono text-xs px-6 py-2.5 rounded transition inline-block">
+                Return to Dashboard
+            </a>
+        </div>
+    </div>
+</body>
+</html>
